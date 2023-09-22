@@ -2,6 +2,8 @@ package com.uangel.sim.scenario;
 
 import com.uangel.sim.command.CliInfo;
 import com.uangel.sim.command.CliManager;
+import com.uangel.sim.http.HttpServer;
+import com.uangel.sim.util.SleepUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -14,7 +16,8 @@ import java.util.concurrent.ScheduledExecutorService;
 public class ScenarioRunner {
 
     private Scenario scenario;
-    private CliInfo cliInfo;
+    private HttpServer httpServer;
+
     // Executor
     // todo Schedule 일 필요? HTTP Server thread 설정 방법
     private ScheduledExecutorService executorService;
@@ -26,7 +29,7 @@ public class ScenarioRunner {
     public void run(String[] args) {
 
         // Parse Command Line
-        cliInfo = CliManager.parseCommandLine(args);
+        CliInfo cliInfo = CliManager.parseCommandLine(args);
         if (cliInfo == null) {
             return;
         }
@@ -39,13 +42,16 @@ public class ScenarioRunner {
                 return;
             }
 
+            String scenarioName = scenario.getName();
+            log.info("[{}] Scenario Parsing Completed", scenarioName);
+            log.info("Parse Scenario Success [{}]", scenario);
+
+            scenario.setCmdInfo(cliInfo);
+
             // Init HTTP Server
             // 파싱한 시나리오 정보 이용해 HTTP Handler 미리 준비
-
-
-            String scenarioName = scenario.getName();
-            scenario.setCmdInfo(cliInfo);
-            log.info("[{}] Scenario Parsing Completed", scenarioName);
+            httpServer = new HttpServer(scenario, cliInfo);
+            httpServer.init();
 
             // set ScenarioRunner
             scenario.setScenarioRunner(this);
@@ -82,11 +88,14 @@ public class ScenarioRunner {
         if (scenario == null || scenario.isEndFlag()) return;
         scenario.setEndFlag(true);
 
-        if (this.executorService != null) {
+        if (httpServer != null)
+            httpServer.stop();
+
+/*        if (this.executorService != null) {
             List<Runnable> interruptedTask = this.executorService.shutdownNow();
             if (!interruptedTask.isEmpty())
                 log.warn("Main ExecutorService was Terminated, RemainedTask: {}", interruptedTask.size());
-        }
+        }*/
 
         log.info("Stop Scenario Runner ({})", reason);
     }
