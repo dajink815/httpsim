@@ -23,6 +23,7 @@ public class CliInfo {
 
     // Performance
     private int threadSize;
+    private int maxTransCnt;
 
     public CliInfo(CommandLine cmd) {
         loadServiceConfig(cmd);
@@ -41,6 +42,7 @@ public class CliInfo {
 
     public void loadPerfConfig(CommandLine cmd) {
         this.threadSize = Integer.parseInt(cmd.getOptionValue("ts", "10"));
+        this.maxTransCnt = Integer.parseInt(cmd.getOptionValue("mt", "10"));
     }
 
     public static Options createOptions() {
@@ -57,6 +59,7 @@ public class CliInfo {
 
         // Performance
         opts.addOption(Option.builder("ts").argName("thread_size").hasArg().desc("Thread size").build());
+        opts.addOption(Option.builder("mt").argName("max_transactions").hasArg().desc("Max Transactions Number").build());
 
         return opts;
     }

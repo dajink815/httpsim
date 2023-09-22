@@ -64,16 +64,23 @@ public class ScenarioRunner {
                             .priority(Thread.MAX_PRIORITY)
                             .build());*/
             log.info("[{}] Scenario Runner Start (CorePool:{})", scenarioName, threadSize);
-            scenario.setExecutorService(executorService);
+            //scenario.setExecutorService(executorService);
+
+            while (!scenario.isEndFlag()) {
+                if (scenario.isTestEnd()) {
+                    stop("Scenario Ended");
+                } else {
+                    SleepUtil.trySleep(500);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // todo 테스트 종료 조건 필요
     public void stop(String reason) {
-        if (scenario == null || scenario.isTestEnded()) return;
-        scenario.setTestEnded(true);
+        if (scenario == null || scenario.isEndFlag()) return;
+        scenario.setEndFlag(true);
 
         if (this.executorService != null) {
             List<Runnable> interruptedTask = this.executorService.shutdownNow();

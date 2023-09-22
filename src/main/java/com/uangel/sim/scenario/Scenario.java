@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author dajin kim
@@ -19,11 +20,31 @@ public class Scenario {
     private CliInfo cmdInfo;
     private ScheduledExecutorService executorService;
     private ScenarioRunner scenarioRunner;
+    private int maxTrans;
+    private final AtomicInteger transCnt = new AtomicInteger();
 
-    private boolean isTestEnded;
+    private boolean endFlag;
 
     public Scenario(String name, List<MsgNode> msgNodes) {
         this.name = name;
         this.msgNodes = msgNodes;
+    }
+
+    public void setCmdInfo(CliInfo cmdInfo) {
+        this.cmdInfo = cmdInfo;
+        this.maxTrans = cmdInfo.getMaxTransCnt();
+    }
+
+    public void increaseTrans() {
+        transCnt.incrementAndGet();
+    }
+
+    public boolean isTestEnd() {
+        if (maxTrans <= 0) return true;
+        return transCnt.get() >= maxTrans;
+    }
+
+    public int getCurTransCnt() {
+        return transCnt.get();
     }
 }

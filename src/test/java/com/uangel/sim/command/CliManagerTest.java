@@ -10,7 +10,7 @@ import java.util.List;
  * @author dajin kim
  */
 public class CliManagerTest {
-    private final List<String> cliList = new ArrayList<>();
+    protected final List<String> cliList = new ArrayList<>();
 
     @Test
     public void testHelpCommandInfo() {
@@ -24,6 +24,7 @@ public class CliManagerTest {
         addCliArgs("hp", "8080");
         addCliArgs("sf", "./src/test/resources/scenario/easy_cms_basic.xml");
         addCliArgs("ts", "10");
+        addCliArgs("mt", "10");
 
         String[] args = cliList.toArray(new String[0]);
         printArr(args);
@@ -31,7 +32,7 @@ public class CliManagerTest {
         CliInfo cliInfo = CliManager.parseCommandLine(args);
         System.out.println(cliInfo);
 
-        Assert.assertEquals(8, cliList.size());
+        Assert.assertEquals(10, cliList.size());
     }
 
     private void addCliArgs(String option, String value) {
