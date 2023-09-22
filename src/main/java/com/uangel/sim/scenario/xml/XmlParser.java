@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -23,10 +24,6 @@ public class XmlParser {
     public static final Pattern initialSpaces = Pattern.compile("^\\s*");
 
     private final NamedNodeMap attr;
-
-/*    public XmlParser(NamedNodeMap attr) {
-        this.attr = attr;
-    }*/
 
     public XmlParser(Node xmlNode) {
         this.attr = xmlNode.getAttributes();
@@ -87,18 +84,18 @@ public class XmlParser {
                     continue;
                 }
 
-                // value 있는지 체크
+                // value 체크
                 if (StringUtil.isNull(value) ) {
-                    log.warn("{}'s child [{}:{}] - value attribute is null, check scenario", parentNodeName, fieldNodeName, name);
-                    continue;
-                }
+                    String rawMessage = fieldNode.getFirstChild().getTextContent();
+                    if (StringUtil.isNull(rawMessage)) {
+                        log.warn("{}'s child [{}:{}] - value is null, check scenario", parentNodeName, fieldNodeName, name);
+                        continue;
+                    }
+                    value = stripWhitespace(rawMessage);
 
-                // Snake To Camel
-  /*              if (name.contains("_")) {
-                    String before = name;
-                    name = StringUtil.snakeToCamel(name.toLowerCase());
-                    log.debug("XmlParser [{}] Child Field... name:{} -> {}", fieldNode.getParentNode().getNodeName(), before, name);
-                }*/
+                    //System.out.println("RawMsg : " + rawMessage);
+                    //System.out.println("WhiteSpace : " + value);
+                }
 
                 // type 은 기본 타입 STR, 값 존재여부 체크 불필요
                 FieldType type = FieldType.getTypeEnum(typeStr);
@@ -108,5 +105,58 @@ public class XmlParser {
         }
 
         return fieldNodes;
+    }
+
+    /**
+     * @param message
+     *            - the text node parsed out of the XML file
+     * @return the SIP message stripped of formatting whitespace
+     */
+    public static String stripWhitespace(String message) {
+        String[] lines = message.split("\r?\n", 0);
+        StringBuilder sb = new StringBuilder();
+        boolean firstNonEmptyLine = false;
+        boolean seenNonEmptyLine = false;
+        int spaces = 0;
+        Pattern someSpaces = null;
+        for (String line : lines) {
+            // Skip over empty lines at the start
+            if (!seenNonEmptyLine) {
+                boolean isLineBlank = (line.trim().isEmpty());
+                if (!isLineBlank) {
+                    firstNonEmptyLine = true;
+                    seenNonEmptyLine = true;
+                }
+            }
+
+            // If the first line is indented, save off the indentation...
+            if (firstNonEmptyLine) {
+                Matcher m = initialSpaces.matcher(line);
+                if (m.find()) {
+                    spaces = m.group().length();
+                    someSpaces = Pattern.compile("^\\s{0," + spaces + "}");
+                }
+                firstNonEmptyLine = false;
+            }
+
+            // ...and strip off at most that much whitespace from subsequent lines.
+            if (seenNonEmptyLine) {
+                if (someSpaces != null) {
+                    sb.append(someSpaces.matcher(line).replaceFirst(""));
+                } else {
+                    sb.append(line);
+                }
+                sb.append("\r\n");
+            }
+        }
+
+        // Remove trailing whitespace (to match the XML format) but then add
+        // CRLF CRLF to end the message if there's no body
+        String stringSoFar = sb.toString().trim();
+        if (!stringSoFar.contains("\r\n\r\n")) {
+            stringSoFar += "\r\n\r\n";
+        }
+        if (!stringSoFar.endsWith("\r\n")) stringSoFar += "\r\n";
+        return stringSoFar;
     }
 }

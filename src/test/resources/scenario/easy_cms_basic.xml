@@ -8,12 +8,54 @@
             <field name="sttType" type="str" value="1416523158"/>
             <field name="ttsType" type="str" value="rsk"/>
             <field name="ttsVoiceActor" type="str" value="14"/>
+            <field name="messages" type="arr">
+                <![CDATA[
+                [
+                    {
+                      "seq": 1,
+                      "message": "메시지 입니다.",
+                      "bargeIn": false
+                    }
+                ]
+                ]]>
+            </field>
+        </body>
+    </msg>
+
+    <msg method="post" url="/gateway/voice/:channelCode/v1/talk">
+        <body status="200">
+            <field name="sessionKey" type="str" value="GW01_20180929191521983_001"/>
+            <field name="type" type="str" value="MESSAGE"/>
+            <field name="sttType" type="str" value="1416523158"/>
+            <field name="ttsType" type="str" value="rsk"/>
+            <field name="ttsVoiceActor" type="str" value="14"/>
 <!--            <field name="messages" type="obj">
                 <![CDATA[
                 [
                     {
                       "seq": 1,
                       "message": "메시지 입니다.",
+                      “bargeIn”: false
+                    }
+                ]
+                ]]>
+            </field>-->
+        </body>
+    </msg>
+
+    <msg method="post" url="/gateway/voice/:channelCode/v1/stop">
+        <body status="200">
+            <field name="sessionKey" type="str" value="GW01_20180929191521983_001"/>
+            <field name="type" type="str" value="MESSAGE"/>
+            <field name="sttType" type="str" value="1416523158"/>
+            <field name="ttsType" type="str" value="rsk"/>
+            <field name="ttsVoiceActor" type="str" value="14"/>
+<!--            <field name="messages" type="obj">
+                <![CDATA[
+                [
+                    {
+                      "seq": 1,
+                      "message": "종료 메시지 입니다.",
                       “bargeIn”: false
                     }
                 ]

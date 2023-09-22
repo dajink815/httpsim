@@ -7,7 +7,7 @@ import com.uangel.sim.util.StringUtil;
  * @author dajin kim
  */
 public enum FieldType {
-    STR("str"), INT("int"), LONG("long"), BOOL("bool");
+    STR("str"), INT("int"), LONG("long"), BOOL("bool"), ARRAY("arr");
 
     private final String value;
 
@@ -32,6 +32,10 @@ public enum FieldType {
             case "boolean":
             case "b":
                 return BOOL;
+            case "arr":
+            case "array":
+            case "a":
+                return ARRAY;
             case "str":
             case "string":
             case "s":

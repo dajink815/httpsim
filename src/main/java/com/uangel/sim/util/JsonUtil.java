@@ -11,13 +11,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.uangel.sim.scenario.nodes.BodyNode;
+import com.uangel.sim.scenario.nodes.FieldNode;
+import com.uangel.sim.scenario.type.FieldType;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -132,22 +140,62 @@ public class JsonUtil {
         }
     }
 
-    public class MyDto {
-
-        private String stringValue;
-        private int intValue;
-        private boolean booleanValue;
-
-        // standard constructor, getters and setters
-
-
-        @Override
-        public String toString() {
-            return "MyDto{" +
-                    "stringValue='" + stringValue + '\'' +
-                    ", intValue=" + intValue +
-                    ", booleanValue=" + booleanValue +
-                    '}';
+    /**
+     * JSONObject 에 Array 타입의 필드 추가
+     * @param jsonObj 필드 추가 할 JSON
+     * @param fieldName 필드 이름
+     * @param arrStr 필드 값
+     * */
+    public static void addJsonArray(JSONObject jsonObj, String fieldName, String arrStr) {
+        try {
+            JSONParser parser = new JSONParser();
+            JSONArray jsonArr = (JSONArray) parser.parse(arrStr);
+            jsonObj.put(fieldName, jsonArr);
+        } catch (ParseException e) {
+            log.error("JsonUtil.addJsonArray.Exception - {}", arrStr, e);
         }
+    }
+
+    public static JSONObject buildJsonMsg(BodyNode bodyNode) {
+
+        List<FieldNode> fieldNodeList = bodyNode.getFieldNodes();
+
+        try {
+            JSONObject data = new JSONObject();
+
+            // Struct Node Message build
+
+            for (FieldNode fieldNode : fieldNodeList) {
+                String fieldName = fieldNode.getName();
+                FieldType type = fieldNode.getType();
+                String value = fieldNode.getValue();
+
+                // Keyword
+/*                KeywordMapper keywordMapper = scenario.getKeywordMapper();
+                value = keywordMapper.replaceKeyword(value, sessionInfo);*/
+
+                if (StringUtil.isNull(value)) continue;
+
+                // Type 별 세팅
+                if (FieldType.STR.equals(type)) {
+                    data.put(fieldName, value);
+                } else if (FieldType.INT.equals(type)) {
+                    data.put(fieldName, Integer.parseInt(value));
+                } else if (FieldType.LONG.equals(type)) {
+                    data.put(fieldName, Long.parseLong(value));
+                } else if (FieldType.BOOL.equals(type)) {
+                    data.put(fieldName, Boolean.parseBoolean(value));
+                } else if (FieldType.ARRAY.equals(type)) {
+                    addJsonArray(data, fieldName, value);
+                }
+            }
+
+            return data;
+
+        } catch (Exception e) {
+            log.error("JsonMsgBuilder.getSubMessage.Exception ", e);
+        }
+
+        return new JSONObject();
     }
 }
