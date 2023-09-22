@@ -151,11 +151,16 @@ public class JsonBuildTest {
         String scenarioPath = "./src/test/resources/scenario/easy_cms_basic.xml";
         Scenario scenario = ScenarioBuilder.fromXMLFileName(scenarioPath);
 
-        List<MsgNode> msgNodes = scenario.getMsgNodes();
-        List<FieldNode> fieldNodes = msgNodes.get(0).getBodyNode().getFieldNodes();
-        System.out.println("Body Field Node List : " + fieldNodes);
+        int idx = 0;
+        assert scenario != null;
+        for (MsgNode msgNode : scenario.getMsgNodes()) {
+            System.out.println("<< " + msgNode.getUri() + " >>");
+            List<FieldNode> fieldNodes = msgNode.getBodyNode().getFieldNodes();
+            System.out.println(idx + ") Body Field Node List : " + fieldNodes);
 
-        JSONObject body = JsonUtil.buildJsonMsg(msgNodes.get(0).getBodyNode());
-        System.out.println(JsonUtil.buildPretty(body));
+            JSONObject body = JsonUtil.buildJsonMsg(msgNode.getBodyNode());
+            System.out.println("Result : " + JsonUtil.buildPretty(body));
+            idx++;
+        }
     }
 }

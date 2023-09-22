@@ -5,7 +5,7 @@ package com.uangel.sim.scenario.type;
  */
 public enum AttrName {
     NAME("name"),
-    METHOD("method"), URL("url"),
+    METHOD("method"), URI("uri"),
     STATUS("status"),
     TYPE("type"), VALUE("value");
 

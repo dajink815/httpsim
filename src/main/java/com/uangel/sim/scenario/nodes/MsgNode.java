@@ -17,7 +17,7 @@ import java.util.List;
 public class MsgNode extends XmlParser {
 
     private final HttpMethodType method;
-    private final String url;
+    private final String uri;
     private HeaderNode headerNode;
     private BodyNode bodyNode;
 
@@ -26,7 +26,7 @@ public class MsgNode extends XmlParser {
 
         String methodStr = getStrAttrValue(AttrName.METHOD.getValue());
         this.method = HttpMethodType.getMethodType(methodStr);
-        this.url = getStrAttrValue(AttrName.URL.getValue());
+        this.uri = getStrAttrValue(AttrName.URI.getValue());
 
         NodeList childNodes = xmlNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -58,10 +58,10 @@ public class MsgNode extends XmlParser {
     @Override
     public String toString() {
         if (headerNode == null)
-            return "MSG(" + method + ", url=" + url
+            return "MSG(" + method + ", uri=" + uri
                     + ", body=" + bodyNode + ")";
         else
-            return "MSG(" + method + ", url=" + url
+            return "MSG(" + method + ", uri=" + uri
                     + ", header=" + headerNode
                     + ", body=" + bodyNode + ")";
     }
