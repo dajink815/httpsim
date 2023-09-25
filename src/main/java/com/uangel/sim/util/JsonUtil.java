@@ -38,6 +38,15 @@ public class JsonUtil {
         // nothing
     }
 
+    public static boolean isJsonStr(String json) {
+        try {
+            new org.json.JSONObject(json);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     // Json Str -> ClassType Object
     public static <T> T parse(String json, Type classType) {
         Gson gson = new Gson();
@@ -107,9 +116,6 @@ public class JsonUtil {
         try {
             // jackson objectMapper 객체 생성
             ObjectMapper mapper = new ObjectMapper();
-
- /*           MyDto readValue = mapper.readValue(json, MyDto.class);
-            log.debug("MyDto : [{}]", readValue);*/
 
             // JsonNode 생성 (readTree, readValue)
             JsonNode jsonNode = mapper.readTree(json);

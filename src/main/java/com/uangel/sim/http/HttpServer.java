@@ -62,6 +62,7 @@ public class HttpServer {
     }
 
     public void stop() {
+        log.info("[HTTP] Stop HTTP Server (IP:{}, Port:{})", cliInfo.getHttpIp(), cliInfo.getHttpPort());
         Spark.stop();
     }
 

@@ -40,7 +40,7 @@ public class TestHttpClient {
                 request = reqBuilder.build();   // Default Method : GET
             }
 
-            log.debug("[HTTP CLIENT] send [{}] -> [{}]", uri, reqBody);
+            log.debug("[HTTP CLIENT] send [{}] -> [{}]", request, reqBody);
 
             return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (Exception e) {

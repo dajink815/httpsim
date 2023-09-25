@@ -5,7 +5,6 @@ import com.uangel.sim.scenario.nodes.MsgNode;
 import lombok.Data;
 
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -17,8 +16,7 @@ public class Scenario {
     private final String name;
     private final List<MsgNode> msgNodes;
 
-    private CliInfo cmdInfo;
-    private ScheduledExecutorService executorService;
+    private CliInfo cliInfo;
     private ScenarioRunner scenarioRunner;
     private int maxTrans;
     private final AtomicInteger transCnt = new AtomicInteger();
@@ -30,18 +28,13 @@ public class Scenario {
         this.msgNodes = msgNodes;
     }
 
-    public void setCmdInfo(CliInfo cmdInfo) {
-        this.cmdInfo = cmdInfo;
-        this.maxTrans = cmdInfo.getMaxTransCnt();
+    public void setCliInfo(CliInfo cliInfo) {
+        this.cliInfo = cliInfo;
+        this.maxTrans = cliInfo.getMaxTransCnt();
     }
 
     public void increaseTrans() {
         transCnt.incrementAndGet();
-    }
-
-    public boolean isTestEnd() {
-        if (maxTrans <= 0) return true;
-        return transCnt.get() >= maxTrans;
     }
 
     public int getCurTransCnt() {

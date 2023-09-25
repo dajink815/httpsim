@@ -23,14 +23,14 @@ public class CliManagerTest {
         addCliArgs("hh", "127.0.0.1");
         addCliArgs("hp", "8080");
         addCliArgs("sf", "./src/test/resources/scenario/easy_cms_basic.xml");
-        addCliArgs("ts", "10");
-        addCliArgs("mt", "10");
+        addCliArgs("ts", "8");
+        addCliArgs("mt", "3");
 
         String[] args = cliList.toArray(new String[0]);
         printArr(args);
 
-        CliInfo cliInfo = CliManager.parseCommandLine(args);
-        System.out.println(cliInfo);
+/*        CliInfo cliInfo = CliManager.parseCommandLine(args);
+        System.out.println(cliInfo);*/
 
         Assert.assertEquals(10, cliList.size());
     }

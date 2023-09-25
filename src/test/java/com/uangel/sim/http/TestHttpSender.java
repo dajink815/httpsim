@@ -1,6 +1,7 @@
 package com.uangel.sim.http;
 
 import com.uangel.sim.command.CliInfo;
+import com.uangel.sim.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.http.HttpResponse;
@@ -18,16 +19,24 @@ public class TestHttpSender extends TestHttpClient {
                 .append(":").append(cliInfo.getHttpPort()).append("/");
     }
 
-    public void testSend(String uri) {
-        String reqBody = "{value:test}";
-        String url = baseUrl.append(uri).toString();
+    public void msgSend(String uri) {
+        String reqBody = "{\"value\":\"test\"}";
+        String url = buildUrl(uri);
+
         HttpResponse<String> response = send(url, reqBody);
 
-        String resUri = response.uri().toString();
-
-        log.debug("[HTTP CLIENT] received [{}({})] <- [{}]", resUri, response.statusCode(), response);
+        log.debug("[HTTP CLIENT] received {}", response);
         log.debug("[HTTP CLIENT] Headers [{}]", response.headers().map());
-        log.debug("[HTTP CLIENT] body [{}]", response.body());
+
+        String body = response.body();
+        if (JsonUtil.isJsonStr(body))
+            log.debug("[HTTP CLIENT] body [{}]", JsonUtil.buildPretty(body));
+        else
+            log.debug("[HTTP CLIENT] body [{}]", body);
+    }
+
+    private String buildUrl(String uri) {
+        return this.baseUrl.toString() + uri;
     }
 
 

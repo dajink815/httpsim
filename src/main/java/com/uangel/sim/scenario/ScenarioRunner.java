@@ -4,6 +4,7 @@ import com.uangel.sim.command.CliInfo;
 import com.uangel.sim.command.CliManager;
 import com.uangel.sim.http.HttpServer;
 import com.uangel.sim.util.SleepUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author dajin kim
  */
 @Slf4j
+@Getter
 public class ScenarioRunner {
 
     private Scenario scenario;
@@ -40,7 +42,7 @@ public class ScenarioRunner {
             log.info("[{}] Scenario Parsing Completed", scenarioName);
             log.info("Parse Scenario Success [{}]", scenario);
 
-            scenario.setCmdInfo(cliInfo);
+            scenario.setCliInfo(cliInfo);
 
             // Init HTTP Server
             // 파싱한 시나리오 정보 이용해 HTTP Handler 미리 준비
@@ -56,7 +58,10 @@ public class ScenarioRunner {
             Thread.currentThread().setName(scenarioName);
 
             while (!scenario.isEndFlag()) {
-                if (scenario.isTestEnd()) {
+                int maxTransaction = scenario.getMaxTrans();
+                int transCnt = scenario.getCurTransCnt();
+                if (maxTransaction <= 0 || transCnt >= maxTransaction) {
+                    log.info("Max Transaction count is over (max:{}, curTrans:{})", maxTransaction, transCnt);
                     stop("Scenario Ended");
                 } else {
                     SleepUtil.trySleep(500);
@@ -69,12 +74,13 @@ public class ScenarioRunner {
 
     public void stop(String reason) {
         if (scenario == null || scenario.isEndFlag()) return;
+        log.info("Stop Scenario Runner ({})", reason);
+
         scenario.setEndFlag(true);
 
         if (httpServer != null)
             httpServer.stop();
 
-        log.info("Stop Scenario Runner ({})", reason);
     }
 
 }
