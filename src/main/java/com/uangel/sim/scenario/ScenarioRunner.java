@@ -6,8 +6,6 @@ import com.uangel.sim.http.HttpServer;
 import com.uangel.sim.util.SleepUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author dajin kim
@@ -17,10 +15,6 @@ public class ScenarioRunner {
 
     private Scenario scenario;
     private HttpServer httpServer;
-
-    // Executor
-    // todo Schedule 일 필요? HTTP Server thread 설정 방법
-    private ScheduledExecutorService executorService;
 
     public ScenarioRunner() {
         // nothing
@@ -61,17 +55,6 @@ public class ScenarioRunner {
 
             Thread.currentThread().setName(scenarioName);
 
-            // Thread Pool
-            int threadSize = cliInfo.getThreadSize() <= 0 ?
-                    Runtime.getRuntime().availableProcessors() : cliInfo.getThreadSize();
-/*            this.executorService = new Sche(threadSize,
-                    new BasicThreadFactory.Builder()
-                            .namingPattern(scenarioName + "-%d")
-                            .priority(Thread.MAX_PRIORITY)
-                            .build());*/
-            log.info("[{}] Scenario Runner Start (CorePool:{})", scenarioName, threadSize);
-            //scenario.setExecutorService(executorService);
-
             while (!scenario.isEndFlag()) {
                 if (scenario.isTestEnd()) {
                     stop("Scenario Ended");
@@ -90,12 +73,6 @@ public class ScenarioRunner {
 
         if (httpServer != null)
             httpServer.stop();
-
-/*        if (this.executorService != null) {
-            List<Runnable> interruptedTask = this.executorService.shutdownNow();
-            if (!interruptedTask.isEmpty())
-                log.warn("Main ExecutorService was Terminated, RemainedTask: {}", interruptedTask.size());
-        }*/
 
         log.info("Stop Scenario Runner ({})", reason);
     }

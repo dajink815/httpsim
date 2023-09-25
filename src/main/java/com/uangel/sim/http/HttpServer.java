@@ -26,11 +26,25 @@ public class HttpServer {
 
     public void init() {
 
-        log.info("[HTTP] Start HTTP Server (IP:{}, Port:{})", cliInfo.getHttpIp(), cliInfo.getHttpPort());
+        // Thread Pool
+        int threadSize = cliInfo.getThreadSize() <= 0 ?
+                Runtime.getRuntime().availableProcessors() : cliInfo.getThreadSize();
+
+        log.info("[HTTP] Start HTTP Server (IP:{}, Port:{}, Thread:{})",
+                cliInfo.getHttpIp(), cliInfo.getHttpPort(), threadSize);
 
         // Load Server
         Spark.ipAddress(cliInfo.getHttpIp());
         Spark.port(cliInfo.getHttpPort());
+        Spark.threadPool(threadSize);
+        // timeoutMillis
+
+        /*
+        * Secure (HTTPS/SSL)
+        * You can set the connection to be secure via the secure() method.
+        * This has to be done before any route mapping:
+        * secure(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePassword);Copy
+        * */
 
         // Ready Handler - 메시지 하나 당 하나의 handler 등록
         for (MsgNode msgNode : msgNodes) {
@@ -38,8 +52,12 @@ public class HttpServer {
                 HttpBuilder.makeGetRoute(msgNode, scenario);
             } else if (HttpMethodType.POST.equals(msgNode.getMethod())) {
                 HttpBuilder.makePostRoute(msgNode, scenario);
+            } else if (HttpMethodType.DELETE.equals(msgNode.getMethod())) {
+                HttpBuilder.makeDeleteRoute(msgNode, scenario);
+            } else if (HttpMethodType.PUT.equals(msgNode.getMethod())) {
+                HttpBuilder.makePutRoute(msgNode, scenario);
             }
-        }
+         }
 
     }
 
