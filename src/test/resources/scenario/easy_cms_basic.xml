@@ -8,6 +8,10 @@
             <field name="sttType" type="str" value="1416523158"/>
             <field name="ttsType" type="str" value="rsk"/>
             <field name="ttsVoiceActor" type="str" value="14"/>
+            <field name="valueTest" type="str" value="[last_value]"/>
+            <field name="hostTest" type="str" value="[host]"/>
+            <field name="portTest" type="str" value="[port]"/>
+            <field name="tId" type="str" value="[tid]"/>
             <field name="messages" type="arr">
                 <![CDATA[
                 [

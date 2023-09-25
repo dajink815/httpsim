@@ -37,7 +37,7 @@ public class CliInfo {
 
     public void loadHttpConfig(CommandLine cmd) {
         this.httpIp = cmd.getOptionValue("hh");
-        this.httpPort = Integer.parseInt(cmd.getOptionValue("hp", "5672"));
+        this.httpPort = Integer.parseInt(cmd.getOptionValue("hp", "4567"));
     }
 
     public void loadPerfConfig(CommandLine cmd) {

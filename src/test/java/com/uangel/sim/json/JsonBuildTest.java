@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -158,7 +159,7 @@ public class JsonBuildTest {
             List<FieldNode> fieldNodes = msgNode.getBodyNode().getFieldNodes();
             System.out.println(idx + ") Body Field Node List : " + fieldNodes);
 
-            JSONObject body = JsonUtil.buildJsonMsg(msgNode.getBodyNode());
+            JSONObject body = JsonUtil.buildJsonMsg(msgNode.getBodyNode(), Collections.emptyMap(), null);
             System.out.println("Result : " + JsonUtil.buildPretty(body));
             idx++;
         }

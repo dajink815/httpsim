@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.uangel.sim.scenario.handler.KeywordMapper;
 import com.uangel.sim.scenario.nodes.BodyNode;
 import com.uangel.sim.scenario.nodes.FieldNode;
 import com.uangel.sim.scenario.type.FieldType;
@@ -162,7 +163,7 @@ public class JsonUtil {
         }
     }
 
-    public static JSONObject buildJsonMsg(BodyNode bodyNode) {
+    public static JSONObject buildJsonMsg(BodyNode bodyNode, Map<String, String> fieldsMap, KeywordMapper keywordMapper) {
 
         List<FieldNode> fieldNodeList = bodyNode.getFieldNodes();
 
@@ -177,8 +178,9 @@ public class JsonUtil {
                 String value = fieldNode.getValue();
 
                 // Keyword
-/*                KeywordMapper keywordMapper = scenario.getKeywordMapper();
-                value = keywordMapper.replaceKeyword(value, sessionInfo);*/
+                if (keywordMapper != null) {
+                    value = keywordMapper.replaceKeyword(value, fieldsMap);
+                }
 
                 if (StringUtil.isNull(value)) continue;
 

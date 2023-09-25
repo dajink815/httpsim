@@ -3,6 +3,7 @@ package com.uangel.sim.scenario;
 import com.uangel.sim.command.CliInfo;
 import com.uangel.sim.command.CliManager;
 import com.uangel.sim.http.HttpServer;
+import com.uangel.sim.scenario.handler.KeywordMapper;
 import com.uangel.sim.util.SleepUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -53,9 +54,7 @@ public class ScenarioRunner {
             scenario.setScenarioRunner(this);
 
             // Keyword
-
-
-            Thread.currentThread().setName(scenarioName);
+            scenario.setKeywordMapper(new KeywordMapper(cliInfo));
 
             while (!scenario.isEndFlag()) {
                 int maxTransaction = scenario.getMaxTrans();

@@ -54,21 +54,14 @@ public class HttpBuilder {
 
     private static String handleHttpMsg(MsgNode msgNode, Scenario scenario, Request req, Response res) {
         BodyNode body = msgNode.getBodyNode();
-        HeaderNode header = msgNode.getHeaderNode();
-
-        log.debug("[HTTP] URI : {}", req.uri());
-        log.debug("[HTTP] URL : {}", req.url());
-        log.debug("[HTTP] Headers : {}", req.headers());
-        log.debug("[HTTP] Body : {}", req.body());
-
-        // Body Json 포맷만 고려
-        Map<String, String> fieldsMap = JsonUtil.getAllJsonFields(req.body());
-
-        // res 생성시 keyword 처리에 fieldsMap 사용
+        // HeaderNode header = msgNode.getHeaderNode();
 
         int curTrans = scenario.getCurTransCnt();
         scenario.increaseTrans();
-        log.debug("[HTTP] Prev:{} -> Cur:{}", curTrans, scenario.getCurTransCnt());
+        log.debug("[HTTP] Recv Request - ({}) Body: {} (TransCnt:{}->{})", req.uri(), req.body(), curTrans, scenario.getCurTransCnt());
+
+        // Body Json 포맷만 고려
+        Map<String, String> fieldsMap = JsonUtil.getAllJsonFields(req.body());
 
         // Header 처리
 /*        if (header != null) {
@@ -81,9 +74,11 @@ public class HttpBuilder {
 
         // Body 처리
         String result = "";
-        JSONObject jsonObject = JsonUtil.buildJsonMsg(body);
-        if (!jsonObject.isEmpty())
+        JSONObject jsonObject = JsonUtil.buildJsonMsg(body, fieldsMap, scenario.getKeywordMapper());
+        if (!jsonObject.isEmpty()) {
             result = jsonObject.toJSONString();
+            log.debug("[HTTP] Response Body: {}", JsonUtil.buildPretty(result));
+        }
 
         // Response body 전송 시
         // return Json ? res.body(Json) ?

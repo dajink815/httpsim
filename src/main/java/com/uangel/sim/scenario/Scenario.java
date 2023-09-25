@@ -1,6 +1,7 @@
 package com.uangel.sim.scenario;
 
 import com.uangel.sim.command.CliInfo;
+import com.uangel.sim.scenario.handler.KeywordMapper;
 import com.uangel.sim.scenario.nodes.MsgNode;
 import lombok.Data;
 
@@ -18,6 +19,8 @@ public class Scenario {
 
     private CliInfo cliInfo;
     private ScenarioRunner scenarioRunner;
+    private KeywordMapper keywordMapper;
+
     private int maxTrans;
     private final AtomicInteger transCnt = new AtomicInteger();
 
