@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Node;
 
+import java.util.List;
+
 /**
  * @author dajin kim
  */
@@ -11,8 +13,9 @@ import org.w3c.dom.Node;
 @Slf4j
 public class HeaderNode extends ChildNode {
 
-    public HeaderNode(Node xmlNode) {
+    public HeaderNode(Node xmlNode, List<FieldNode> fieldNodes) {
         super(xmlNode);
+        super.fieldNodes = fieldNodes;
     }
 
     @Override

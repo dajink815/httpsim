@@ -16,11 +16,26 @@ public class TestHttpSender extends TestHttpClient {
 
     public TestHttpSender(CliInfo cliInfo) {
         this.baseUrl = new StringBuilder("http://").append(cliInfo.getHttpIp())
-                .append(":").append(cliInfo.getHttpPort()).append("/");
+                .append(":").append(cliInfo.getHttpPort());
     }
 
-    public void msgSend(String uri) {
-        String reqBody = "{\"value\":\"test\"}";
+    public void apiMsgSend(String uri) {
+        String reqBody = "{\n" +
+                "\"token\":\"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJlYXN5Q01TIiwicm9sZSI6IkFQSSIsImlhdCI6MTYyMzczMjU3NCwiZXhwIjo0Nzc3MzMyNTc0fQ.JFf9V-2TiK0I925h59VO0nBjMyG05hSS7-NIYDvVqLy2jZyX-6ngYS6FaZ7xEKFggIXiJkp-14rSe4F07xjS1Q\",\n" +
+                "\"svcNo\":\"0211111111\"\n" +
+                "}";
+        msgSend(uri, reqBody);
+    }
+
+    public void easyCmsMsgSend(String uri) {
+        String reqBody = "{\n" +
+                "\"value\":\"test\",\n" +
+                "\"sessionKey\":\"0211111111\"\n" +
+                "}";
+        msgSend(uri, reqBody);
+    }
+
+    public void msgSend(String uri, String reqBody) {
         String url = buildUrl(uri);
 
         HttpResponse<String> response = send(url, reqBody);

@@ -163,12 +163,26 @@ public class JsonUtil {
         }
     }
 
+    public static JSONObject getJsonObj(BodyNode bodyNode) {
+        String bodyNodeValue = bodyNode.getNodeValue();
+        if (bodyNodeValue == null) {
+            return new JSONObject();
+        }
+
+        JSONParser parser = new JSONParser();
+        try {
+            return (JSONObject) parser.parse(bodyNodeValue);
+        } catch (ParseException e) {
+            return new JSONObject();
+        }
+    }
+
     public static JSONObject buildJsonMsg(BodyNode bodyNode, Map<String, String> fieldsMap, KeywordMapper keywordMapper) {
 
         List<FieldNode> fieldNodeList = bodyNode.getFieldNodes();
 
         try {
-            JSONObject data = new JSONObject();
+            JSONObject data = getJsonObj(bodyNode);
 
             // Struct Node Message build
 

@@ -148,8 +148,8 @@ public class JsonBuildTest {
     }
 
     @Test
-    public void buildJsonMsgTest() throws IOException, SAXException, ParseException {
-        String scenarioPath = "./src/test/resources/scenario/easy_cms_basic.xml";
+    public void buildJsonMsgTest() throws IOException, SAXException {
+        String scenarioPath = "./src/test/resources/scenario/aica_basic.xml";
         Scenario scenario = ScenarioBuilder.fromXMLFileName(scenarioPath);
 
         int idx = 0;
@@ -163,5 +163,31 @@ public class JsonBuildTest {
             System.out.println("Result : " + JsonUtil.buildPretty(body));
             idx++;
         }
+    }
+
+    @Test
+    public void buildJsonObjbyStr() {
+        String json = "            {\n" +
+                "                \"seq\": 1,\n" +
+                "                \"message\": \"시작 메시지 입니다.\",\n" +
+                "                \"bargeIn\": false\n" +
+                "            }";
+
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(json);
+
+            // 변환된 JSONObject 사용 예시
+            int seq = (int) (long) jsonObject.get("seq");
+            String message = (String) jsonObject.get("message");
+            boolean bargeIn = (boolean) jsonObject.get("bargeIn");
+
+            System.out.println("seq: " + seq);
+            System.out.println("message: " + message);
+            System.out.println("bargeIn: " + bargeIn);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 }

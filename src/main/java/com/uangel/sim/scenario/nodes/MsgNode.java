@@ -36,19 +36,12 @@ public class MsgNode extends XmlParser {
                 List<FieldNode> fieldNodes = createFieldInfos(childNode.getChildNodes());
 
                 if (NodeName.BODY.getValue().equals(childNode.getNodeName())) {
-
                     if (bodyNode == null) {
-                        //System.out.println("Body FieldInfos : " + fieldNodes);
                         bodyNode = new BodyNode(childNode, fieldNodes);
                     }
-
-                } else if (NodeName.HEADER.getValue().equals(childNode.getNodeName())) {
-
-                    if (headerNode == null) {
-                        System.out.println("Header FieldInfos : " + fieldNodes);
-                        headerNode = new HeaderNode(childNode);
-                    }
-
+                } else if (NodeName.HEADER.getValue().equals(childNode.getNodeName())
+                        && headerNode == null) {
+                    headerNode = new HeaderNode(childNode, fieldNodes);
                 }
 
             }

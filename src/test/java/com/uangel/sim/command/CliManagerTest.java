@@ -22,9 +22,9 @@ public class CliManagerTest {
     public void prepareOptions() {
         addCliArgs("hh", "127.0.0.1");
         addCliArgs("hp", "8080");
-        addCliArgs("sf", "./src/test/resources/scenario/easy_cms_basic.xml");
+        addCliArgs("sf", "./src/test/resources/scenario/aica_basic.xml");
         addCliArgs("ts", "8");
-        addCliArgs("mt", "3");
+        addCliArgs("mt", "5");
 
         String[] args = cliList.toArray(new String[0]);
         printArr(args);

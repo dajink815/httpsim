@@ -28,13 +28,19 @@ public class ScenarioRunnerTest extends CliManagerTest {
         Scenario scenario = runner.getScenario();
         TestHttpSender httpSender = new TestHttpSender(scenario.getCliInfo());
 
-        httpSender.msgSend("/gateway/voice/uangelChannel/v1/start");
+        httpSender.apiMsgSend("/aica/v1.0/internal/SelectBotCodeApi");
         SleepUtil.trySleep(2000);
 
-        httpSender.msgSend("/gateway/voice/uangelChannel/v1/talk");
+        httpSender.apiMsgSend("/aica/v1.0/internal/SelectVbSetApi");
         SleepUtil.trySleep(2000);
 
-        httpSender.msgSend("/gateway/voice/uangelChannel/v1/stop");
+        httpSender.easyCmsMsgSend("/gateway/voice/uangelChannel/v1/start");
+        SleepUtil.trySleep(2000);
+
+        httpSender.easyCmsMsgSend("/gateway/voice/uangelChannel/v1/talk");
+        SleepUtil.trySleep(2000);
+
+        httpSender.easyCmsMsgSend("/gateway/voice/uangelChannel/v1/stop");
         SleepUtil.trySleep(1000);
 
         Assert.assertNull(f.get());
