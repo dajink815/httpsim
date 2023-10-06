@@ -56,9 +56,14 @@ public class HttpBuilder {
         BodyNode body = msgNode.getBodyNode();
         // HeaderNode header = msgNode.getHeaderNode();
 
-        int curTrans = scenario.getCurTransCnt();
+        int curTotalTrans = scenario.getCurTransCnt();
         scenario.increaseTrans();
-        log.debug("[HTTP] Recv Request - ({}) Body: {} (TransCnt:{}->{})", req.uri(), req.body(), curTrans, scenario.getCurTransCnt());
+
+        int curUriTrans = msgNode.getTransCnt();
+        msgNode.increaseCnt();
+
+        log.debug("[HTTP] Recv Request - ({}) Body: {} (Total:{}->{}) (UriCnt:{}->{})",
+                req.uri(), req.body(), curTotalTrans, scenario.getCurTransCnt(), curUriTrans, msgNode.getTransCnt());
 
         // Body Json 포맷만 고려
         Map<String, String> fieldsMap = JsonUtil.getAllJsonFields(req.body());

@@ -9,6 +9,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author dajin kim
@@ -20,6 +21,15 @@ public class MsgNode extends XmlParser {
     private final String uri;
     private HeaderNode headerNode;
     private BodyNode bodyNode;
+    private final AtomicInteger transCnt = new AtomicInteger();
+
+    public void increaseCnt() {
+        transCnt.incrementAndGet();
+    }
+
+    public int getTransCnt() {
+        return transCnt.get();
+    }
 
     public MsgNode(Node xmlNode) {
         super(xmlNode);

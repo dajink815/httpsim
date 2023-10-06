@@ -4,6 +4,7 @@ import com.uangel.sim.command.CliInfo;
 import com.uangel.sim.command.CliManager;
 import com.uangel.sim.http.HttpServer;
 import com.uangel.sim.scenario.handler.KeywordMapper;
+import com.uangel.sim.scenario.screen.ScenarioScreen;
 import com.uangel.sim.util.SleepUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class ScenarioRunner {
 
     private Scenario scenario;
     private HttpServer httpServer;
+    private ScenarioScreen scenarioScreen;
 
     public ScenarioRunner() {
         // nothing
@@ -56,6 +58,10 @@ public class ScenarioRunner {
             // Keyword
             scenario.setKeywordMapper(new KeywordMapper(cliInfo));
 
+            // Screen
+            scenarioScreen = new ScenarioScreen(scenario);
+            scenarioScreen.run();
+
             while (!scenario.isEndFlag()) {
                 int maxTransaction = scenario.getMaxTrans();
                 int transCnt = scenario.getCurTransCnt();
@@ -67,7 +73,7 @@ public class ScenarioRunner {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error Occurs while handling ScenarioRunner e=", e);
         }
     }
 
@@ -79,6 +85,9 @@ public class ScenarioRunner {
 
         if (httpServer != null)
             httpServer.stop();
+
+        if (scenarioScreen != null)
+            scenarioScreen.stop();
 
     }
 

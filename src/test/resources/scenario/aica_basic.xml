@@ -2,6 +2,10 @@
 <scenario name="aica_basic">
 
     <msg method="post" uri="/aica/v1.0/internal/SelectBotCodeApi">
+        <header>
+            <field name="botCodeInt" type="int" value="1234"/>
+            <field name="botCodeStr" type="str" value="abcd1234"/>
+        </header>
         <body status="200">
             <field name="botCode" type="str" value="abcd1234"/>
         </body>
