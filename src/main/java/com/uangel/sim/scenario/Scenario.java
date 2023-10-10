@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * @author dajin kim
@@ -17,7 +16,6 @@ public class Scenario {
 
     private final String name;
     private final List<MsgNode> msgNodes;
-    private final List<String> uriList;
 
     private CliInfo cliInfo;
     private ScenarioRunner scenarioRunner;
@@ -31,7 +29,6 @@ public class Scenario {
     public Scenario(String name, List<MsgNode> msgNodes) {
         this.name = name;
         this.msgNodes = msgNodes;
-        this.uriList = msgNodes.stream().map(MsgNode::getUri).collect(Collectors.toList());
     }
 
     public void setCliInfo(CliInfo cliInfo) {

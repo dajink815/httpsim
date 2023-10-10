@@ -2,12 +2,14 @@ package com.uangel.sim.http;
 
 import com.uangel.sim.scenario.Scenario;
 import com.uangel.sim.scenario.nodes.*;
+import com.uangel.sim.scenario.type.FieldType;
 import com.uangel.sim.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.util.List;
 import java.util.Map;
 
 import static spark.Spark.*;
@@ -54,7 +56,7 @@ public class HttpBuilder {
 
     private static String handleHttpMsg(MsgNode msgNode, Scenario scenario, Request req, Response res) {
         BodyNode body = msgNode.getBodyNode();
-        // HeaderNode header = msgNode.getHeaderNode();
+        HeaderNode header = msgNode.getHeaderNode();
 
         int curTotalTrans = scenario.getCurTransCnt();
         scenario.increaseTrans();
@@ -69,8 +71,22 @@ public class HttpBuilder {
         Map<String, String> fieldsMap = JsonUtil.getAllJsonFields(req.body());
 
         // Header 처리
-/*        if (header != null) {
-        }*/
+        if (header != null) {
+            List<FieldNode> headerFields = header.getFieldNodes();
+            for (FieldNode fieldNode : headerFields) {
+                try {
+                    if (FieldType.STR.equals(fieldNode.getType()))  {
+                        log.debug("[HTTP] Add Header - name:{}, value:{}", fieldNode.getName(), fieldNode.getValue());
+                        res.header(fieldNode.getName(), fieldNode.getValue());
+                    } else {
+                        log.info("[HTTP] Check Header Field Type - name:{}, value:{}, type:{}",
+                                fieldNode.getName(), fieldNode.getValue(), fieldNode.getType());
+                    }
+                } catch (Exception e) {
+                    log.error("[HTTP] HttpBuilder.handleHttpMsg.Exception - Check Header Field ({})", fieldNode, e);
+                }
+            }
+        }
 
         // content-type : 기본 JSON
         res.type(HttpEnums.APPLICATION_JSON.getStr());

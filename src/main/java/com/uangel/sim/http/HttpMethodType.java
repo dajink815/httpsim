@@ -1,8 +1,11 @@
 package com.uangel.sim.http;
 
+import lombok.Getter;
+
 /**
  * @author dajin kim
  */
+@Getter
 public enum HttpMethodType {
     GET("get"), POST("post"), PUT("put"), DELETE("delete");
 
@@ -10,10 +13,6 @@ public enum HttpMethodType {
 
     HttpMethodType(String str) {
         this.str = str;
-    }
-
-    public String getStr() {
-        return str;
     }
 
     public static HttpMethodType getMethodType(String method) {
