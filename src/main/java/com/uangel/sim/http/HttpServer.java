@@ -1,5 +1,6 @@
 package com.uangel.sim.http;
 
+import com.google.gson.Gson;
 import com.uangel.sim.command.CliInfo;
 import com.uangel.sim.scenario.Scenario;
 import com.uangel.sim.scenario.nodes.MsgNode;
@@ -37,6 +38,19 @@ public class HttpServer {
         Spark.ipAddress(cliInfo.getHttpIp());
         Spark.port(cliInfo.getHttpPort());
         Spark.threadPool(threadSize);
+        Spark.exception(Exception.class, (exception, req, res) -> {
+            log.error("[HTTP] Err Occurs while handling HTTP Request - ({}) Body: {}\r\ne=", req.uri(), req.body(), exception);
+            res.status(500);
+            res.type("application/json");
+            res.body(new Gson().toJson("Internal Server Error"));
+        });
+        Spark.notFound((req, res) -> {
+            log.warn("[HTTP] Cannot Handle HTTP Request - ({}) Body: {}", req.uri(), req.body());
+            res.status(404);
+            res.type("application/json");
+            res.body(new Gson().toJson("Not Found"));
+            return "Not Found";
+        });
         // timeoutMillis
 
         /*
