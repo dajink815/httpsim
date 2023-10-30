@@ -6,6 +6,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 /**
@@ -36,6 +38,41 @@ public class TestHttpClient {
             HttpRequest request;
             if (reqBody != null) {
                 request = reqBuilder.POST(HttpRequest.BodyPublishers.ofString(reqBody)).build();
+            } else {
+                request = reqBuilder.build();   // Default Method : GET
+            }
+
+            log.debug("[HTTP CLIENT] send [{}] -> [{}]", request, reqBody);
+
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            log.error("[HTTP CLIENT] TestHttpClient.Exception ", e);
+        }
+
+        return null;
+    }
+
+    protected HttpResponse<String> sendMultipart(String uriStr, String filePath, String reqBody) {
+        try {
+            URI uri = URI.create(uriStr);
+
+            // Prepare the multipart/form-data request
+            HttpRequest.Builder reqBuilder = HttpRequest.newBuilder(uri)
+                    .timeout(Duration.ofSeconds(5))
+                    .header(HttpEnums.CONTENT_TYPE.getStr(), HttpEnums.MULTIPART.getStr());
+
+            // Set the file path of the file to be uploaded
+            Path file = Paths.get(filePath);
+
+            // Set Body
+            HttpRequest request;
+            if (reqBody != null) {
+                request = reqBuilder
+                        .POST(HttpRequest.BodyPublishers.ofString(reqBody))
+                        .POST(HttpRequest.BodyPublishers.ofFile(file))
+                        //.method("post",HttpRequest.BodyProcessor.fromString("foo"))
+                        //.method("post", HttpRequest.BodyProcessor.fromFile(Paths.get("/path/to/your/file")))
+                        .build();
             } else {
                 request = reqBuilder.build();   // Default Method : GET
             }

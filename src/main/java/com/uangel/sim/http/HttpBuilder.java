@@ -5,12 +5,17 @@ import com.uangel.sim.scenario.nodes.*;
 import com.uangel.sim.scenario.type.FieldType;
 import com.uangel.sim.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.json.simple.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.apache.http.client.methods.HttpPost;
 
 import static spark.Spark.*;
 
@@ -67,8 +72,26 @@ public class HttpBuilder {
         log.debug("[HTTP] Recv Request - ({}) Body: {} (Total:{}->{}) (UriCnt:{}->{})",
                 req.uri(), req.body(), curTotalTrans, scenario.getCurTransCnt(), curUriTrans, msgNode.getTransCnt());
 
-        // Body Json 포맷만 고려
-        Map<String, String> fieldsMap = JsonUtil.getAllJsonFields(req.body());
+        Map<String, String> fieldsMap;
+        if (req.contentType().equals(HttpEnums.APPLICATION_JSON.getStr())) {
+            fieldsMap = JsonUtil.getAllJsonFields(req.body());
+        }
+        // JSON 포맷 외의 Body 도 처리
+        else {
+            try {
+                log.debug("[HTTP] ContentType: [{}]", req.headers(HttpEnums.CONTENT_TYPE.getStr()));
+                // JSON 추출
+                String bodyStr = req.body();
+                int startIndex = bodyStr.indexOf("{");
+                int endIndex = bodyStr.lastIndexOf("}");
+                String jsonMessage = bodyStr.substring(startIndex, endIndex + 1);
+                log.debug("[HTTP] Json: [{}]", jsonMessage);
+                fieldsMap = JsonUtil.getAllJsonFields(jsonMessage);
+            } catch (Exception e) {
+                log.error("[HTTP] HttpBuilder Parse Json Exception", e);
+                fieldsMap = Collections.emptyMap();
+            }
+        }
 
         // Header 처리
         if (header != null) {
@@ -105,6 +128,25 @@ public class HttpBuilder {
         // return Json ? res.body(Json) ?
 
         return result;
+    }
+
+    // spark.Request -> org.apache.http.client.methods.HttpPost 변환
+    public static HttpPost convertRequestToHttpPost(Request request, String endpoint) {
+        HttpPost httpPost = new HttpPost(endpoint);
+
+        // HTTP 요청 헤더 설정
+        request.headers().forEach(header -> httpPost.setHeader(header, request.headers(header)));
+
+        // JSON 데이터 추출
+        String body = request.body();
+
+        // JSON 데이터를 HttpEntity로 변환
+        HttpEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
+
+        // HttpEntity를 HttpPost에 설정
+        httpPost.setEntity(entity);
+
+        return httpPost;
     }
 
 

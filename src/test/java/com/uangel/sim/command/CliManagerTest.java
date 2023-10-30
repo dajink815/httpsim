@@ -24,7 +24,7 @@ public class CliManagerTest {
         addCliArgs("hp", "8080");
         addCliArgs("sf", "./src/test/resources/scenario/aica_basic.xml");
         addCliArgs("ts", "8");
-        addCliArgs("mt", "5");
+        addCliArgs("mt", "6");
 
         String[] args = cliList.toArray(new String[0]);
         printArr(args);

@@ -5,7 +5,7 @@ package com.uangel.sim.http;
  */
 public enum HttpEnums {
     CONTENT_TYPE("content-type"), AUTHORIZATION("authorization"),
-    APPLICATION_JSON("application/json");
+    APPLICATION_JSON("application/json"), MULTIPART("multipart/form-data");
 
 
     private final String str;

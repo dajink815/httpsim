@@ -28,6 +28,9 @@ public class ScenarioRunnerTest extends CliManagerTest {
         Scenario scenario = runner.getScenario();
         TestHttpSender httpSender = new TestHttpSender(scenario.getCliInfo());
 
+        httpSender.bizRecoSend("./src/test/resources/file", "test.txt");
+        SleepUtil.trySleep(2000);
+
         httpSender.apiMsgSend("/aica/v1.0/internal/SelectBotCodeApi");
         SleepUtil.trySleep(2000);
 

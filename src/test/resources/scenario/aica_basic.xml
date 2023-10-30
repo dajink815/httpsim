@@ -105,5 +105,20 @@
         </body>
     </msg>
 
+    <msg method="post" uri="/recs/record/aimemo/upload_1_2">
+        <body status="200">
+            <![CDATA[
+            {
+                "resDate": "20200311110409",
+                "result": 0,
+                "resultDesc": "Success"
+            }
+            ]]>
+            <field name="srtId" type="str" value="[tId]"/>
+            <field name="sessionKey" type="str" value="[last_sessionKey]"/>
+            <field name="reqNo" type="str" value="[last_reqNo]"/>
+        </body>
+    </msg>
+
 </scenario>
 

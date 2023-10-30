@@ -12,6 +12,7 @@ import java.net.http.HttpResponse;
 @Slf4j
 public class TestHttpSender extends TestHttpClient {
 
+    private final TestApacheHttpClient apacheHttpClient = new TestApacheHttpClient();
     private final StringBuilder baseUrl;
 
     public TestHttpSender(CliInfo cliInfo) {
@@ -33,6 +34,18 @@ public class TestHttpSender extends TestHttpClient {
                 "\"sessionKey\":\"0211111111\"\n" +
                 "}";
         msgSend(uri, reqBody);
+    }
+
+    public void bizRecoSend(String filePath, String fileName) {
+        String url = buildUrl("/recs/record/aimemo/upload_1_2");
+        String reqBody = "{\n" +
+                "\"value\":\"test\",\n" +
+                "\"reqNo\":\"20200214123450A001\",\n" +
+                "\"sessionKey\":\"0211111111\"\n" +
+                "}";
+
+        String body = apacheHttpClient.sendMultipart(reqBody, url, filePath, fileName);
+        log.debug("[HTTP CLIENT] received Body {}", body);
     }
 
     public void msgSend(String uri, String reqBody) {
